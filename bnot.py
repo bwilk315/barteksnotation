@@ -86,7 +86,7 @@ class BNot:
         code = ""
         # Compose the encoded data.
         for name in self.data:
-            value = self.data[name].replace("'", '\\\'')
+            value = str(self.data[name]).replace("'", '\\\'')
             code += "{0}:'{1}';".format(name, value)
         # Export encoded data into specified file path if 'export' is enabled.
         if export:
