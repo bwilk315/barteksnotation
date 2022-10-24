@@ -3,10 +3,10 @@ import re
 
 
 class BNot:
-    VARS_RE = r'(.+?)\:\'(.*?)\'\;'  # Regex used for extracting variable name and value from notation.
-    NULLABLES = ('None', 'null')  # Tuple of all keywords that mean a null value.
+    VARS_RE = r'(.+?)\:\'(.*?)\'\;' # Regex used for extracting variable name and value from notation.
+    NULLABLES = ('None', 'null')    # Tuple of all keywords that mean a null value.
 
-    def __init__(self, data = {}) -> None:
+    def __init__(self, data = {}):
         """
             Initializes the 'BNot' class instance for managing Bartek's Notation.
             @param data:    Starting dictionary of variables.
@@ -32,7 +32,7 @@ class BNot:
         for m in matches:
             # Name and value of decoded variable (both as string).
             name = m[0]
-            value = m[1].replace('\\\'', "'")
+            value = m[1].replace("\\'", "'")
             # True value means a correct-typed value.
             true_value = None if value in BNot.NULLABLES else value
             # Convert original value and if it is possible, assign converted version to the true value
@@ -48,7 +48,7 @@ class BNot:
             bnot.var(name, true_value)
         return bnot
 
-    def var(self, name: str, value: object) -> None:
+    def var(self, name: str, value: object):
         """
             Defines a new value of variable named 'name' with value 'value' assigned to it.
             @param name:    Name of the variable to set.
@@ -56,25 +56,24 @@ class BNot:
         """
         self.data[name] = value
 
-    def get(self, name: str, default = None) -> object:
+    def get(self, name: str, default: object = None) -> object:
         """
             Returns the value of variable named 'name', if it does not exist 'default' value is returned.
             @param name:    Name of variable you want to access.
             @param default: Value returned if variable is not found.
         """
-        if name in self.data:
-            return self.data[name]
-        return default
+        return self.data[name] if name in self.data else default
 
     def und(self, name: str) -> bool:
         """
             Undefines (deletes) the variable with given name.
             @param name:    Name of the variable to delete/undefine.
         """
-        if name in self.data:
+        try:
             del self.data[name]
-            return True
-        return False
+        except KeyError:
+            pass
+        return name in self.data            
 
     def encode(self, export = False, file = 'bnot.txt') -> str:
         """
@@ -83,11 +82,11 @@ class BNot:
             @param export:  If enabled, encoded data will be exported to a file.
             @param file:    Path to the file which will be wrote with encoded data, works only if 'export' is enabled.
         """
-        code = ""
+        code = ''
         # Compose the encoded data.
         for name in self.data:
-            value = str(self.data[name]).replace("'", '\\\'')
-            code += "{0}:'{1}';".format(name, value)
+            value = str(self.data[name]).replace("'", "\\'")
+            code += f"{name}:'{value}';"
         # Export encoded data into specified file path if 'export' is enabled.
         if export:
             with open(file, 'w') as f:
@@ -96,4 +95,5 @@ class BNot:
     
 
 if __name__ == '__main__':
+    # Area for tests.
     pass
